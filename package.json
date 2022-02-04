@@ -1,6 +1,12 @@
 {
   "name": "sveditor",
-  "version": "0.0.11",
+  "version": "0.0.12",
+  "description": "A simple code editor component for svelte with support for syntax highlighting.",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/jorge-brito/sveditor"
+  },
+  "keywords": ["svelte", "editor", "syntax highlighting"],
   "scripts": {
     "dev": "svelte-kit dev --port 3333",
     "build": "svelte-kit build",
