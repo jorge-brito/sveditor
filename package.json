@@ -1,6 +1,6 @@
 {
   "name": "sveditor",
-  "version": "0.0.1",
+  "version": "0.0.11",
   "scripts": {
     "dev": "svelte-kit dev --port 3333",
     "build": "svelte-kit build",
