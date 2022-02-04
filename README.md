@@ -102,7 +102,7 @@ In the main svelte file:
 
 ### Result
 
-![Preview](./preview.gif)
+![Preview](preview.gif)
 
 
 ## License
