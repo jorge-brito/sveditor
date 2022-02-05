@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { afterUpdate, createEventDispatcher, onMount } from 'svelte';
 
 	export type UpdateEditorDetail = {
 		input: HTMLTextAreaElement;
@@ -43,11 +43,11 @@
 
 	const dispatch = createEventDispatcher<{ update: UpdateEditorDetail }>();
 
-	function update() {
+	export const update = () => {
 		output.textContent = source.at(-1) == '\n' ? source + ' ' : source;
 		dispatch('update', { input, output, content, source });
 		setTimeout(resizeInput, 0);
-	}
+	};
 
 	function resizeInput() {
 		const { width, height } = content.getBoundingClientRect();
@@ -68,6 +68,7 @@
 	}
 
 	onMount(update);
+	afterUpdate(update);
 
 	$: inputClass = $$restProps['in-class'] ?? '';
 	$: outputClass = $$restProps['out-class'] ?? '';

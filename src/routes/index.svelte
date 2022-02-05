@@ -8,10 +8,16 @@
 		const { output } = e.detail;
 		hljs.highlightElement(output);
 	}
+
+	let lang = 'javascript';
+
+	setTimeout(() => {
+		lang = 'html';
+	}, 5000);
 </script>
 
 <main>
-	<Editor on:update={highlight} class="hljs" out-class="javascript" fontSize="1.8rem" />
+	<Editor on:update={highlight} class="hljs" out-class={lang} fontSize="1.8rem" />
 </main>
 
 <style>
