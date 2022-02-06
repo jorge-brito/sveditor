@@ -82,7 +82,7 @@ In the main svelte file:
 
 <Editor 
    class="hljs"
-   out-class="javascript"
+   outputClass="javascript"
    fontSize="1.8rem"
    on:update={highlight}
 />
