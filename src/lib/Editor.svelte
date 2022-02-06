@@ -25,8 +25,8 @@
 	export let fontSize = '1rem';
 	export let height = '100%';
 	export let lineHeight = 'initial';
-	export let linesBg = null;
-	export let linesColor = 'rgba(64, 64, 64, 0.9)';
+	export let lineNumbersBg = null;
+	export let lineNumbersFg = 'rgba(64, 64, 64, 0.9)';
 	export let padding = '1rem';
 	export let padx = '0rem';
 	export let pady = '1rem';
@@ -35,24 +35,44 @@
 	export let tabSize = 2;
 	export let width = '100%';
 
+	export let inputClass = '';
+	export let outputClass = '';
+	export let contentClass = '';
+	export let lineNumbersClass = '';
+
 	let input: HTMLTextAreaElement;
 	let output: HTMLElement;
 	let content: HTMLElement;
 	let className = 'editor';
 	let linesWidth = 0;
 
+	let lastWidth = 0,
+		lastHeight = 0;
+
 	const dispatch = createEventDispatcher<{ update: UpdateEditorDetail }>();
 
 	export const update = () => {
-		output.textContent = source.at(-1) == '\n' ? source + ' ' : source;
-		dispatch('update', { input, output, content, source });
-		setTimeout(resizeInput, 0);
+		if (output) {
+			output.textContent = source.at(-1) == '\n' ? source + ' ' : source;
+			dispatch('update', { input, output, content, source });
+			setTimeout(resizeInput, 0);
+		}
 	};
 
 	function resizeInput() {
-		const { width, height } = content.getBoundingClientRect();
-		input.style.height = `${height}px`;
-		input.style.width = `${width}px`;
+		if (content) {
+			const { width, height } = content.getBoundingClientRect();
+
+			if (width != lastWidth) {
+				input.style.width = `${width}px`;
+				lastWidth = width;
+			}
+
+			if (height != lastHeight) {
+				input.style.height = `${height}px`;
+				lastHeight = height;
+			}
+		}
 	}
 
 	function ident(e: KeyboardEvent) {
@@ -62,20 +82,15 @@
 			const [before, after] = [source.slice(0, cursor), source.slice(cursor)];
 
 			source = before + '\t' + after;
+			(document.activeElement as HTMLElement).blur();
 			update();
 			setTimeout(() => (input.selectionEnd = cursor + 1), 0);
+			setTimeout(() => input.focus(), 0);
 		}
 	}
 
 	onMount(update);
 	afterUpdate(update);
-
-	$: inputClass = $$restProps['in-class'] ?? '';
-	$: outputClass = $$restProps['out-class'] ?? '';
-	$: contentClass = $$restProps['content-class'] ?? '';
-	$: linesClass = $$restProps['lines-class'] ?? '';
-	$: lineClass = $$restProps['line-class'] ?? '';
-	$: lineCount = source ? source.split('\n').length : 1;
 </script>
 
 <svelte:window on:resize={resizeInput} />
@@ -87,8 +102,8 @@
 	style:--fontSize={fontSize}
 	style:--height={height}
 	style:--lineHeight={lineHeight}
-	style:--linesBg={linesBg}
-	style:--linesColor={linesColor}
+	style:--lineNumbersBg={lineNumbersBg}
+	style:--lineNumbersFg={lineNumbersFg}
 	style:--marginLeft="calc({linesWidth}px + var(--padx))"
 	style:--padding={padding}
 	style:--padx={padx ?? padding ?? (hideLines ? '1rem' : '0rem')}
@@ -101,9 +116,13 @@
 	on:scroll
 >
 	{#if !hideLines}
-		<ol class="lines {linesClass}" class:with-lines-bg={!!linesBg} bind:clientWidth={linesWidth}>
+		<ol
+			class="lines {lineNumbersClass}"
+			class:with-lines-bg={!!lineNumbersBg}
+			bind:clientWidth={linesWidth}
+		>
 			{#each range(1, lineCount) as n}
-				<li class={lineClass}>{n}</li>
+				<li class={lineNumbersClass}>{n}</li>
 			{/each}
 		</ol>
 	{/if}
@@ -165,7 +184,7 @@
 		left: 0;
 		z-index: 10;
 		position: sticky;
-		color: var(--linesColor);
+		color: var(--lineNumbersFg);
 		padding: var(--pady) 0.825rem;
 		background-color: inherit;
 		min-height: 100%;
@@ -177,7 +196,7 @@
 	}
 
 	.lines.with-lines-bg {
-		background-color: var(--linesBg);
+		background-color: var(--lineNumbersBg);
 	}
 
 	.input,

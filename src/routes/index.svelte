@@ -4,7 +4,7 @@
 	import Editor from 'sveditor';
 	import type { UpdateEditor } from 'sveditor';
 
-	function highlight(e: UpdateEditor) {
+	async function highlight(e: UpdateEditor) {
 		const { output } = e.detail;
 		hljs.highlightElement(output);
 	}
@@ -13,11 +13,11 @@
 
 	setTimeout(() => {
 		lang = 'html';
-	}, 5000);
+	}, 2000);
 </script>
 
 <main>
-	<Editor on:update={highlight} class="hljs" out-class={lang} fontSize="1.8rem" />
+	<Editor on:update={highlight} class="hljs" outputClass={lang} fontSize="1.8rem" />
 </main>
 
 <style>
