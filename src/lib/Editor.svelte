@@ -91,6 +91,8 @@
 
 	onMount(update);
 	afterUpdate(update);
+
+	$: lineCount = source ? source.split('\n').length : 1;
 </script>
 
 <svelte:window on:resize={resizeInput} />
